@@ -6,20 +6,20 @@ import (
 	uuid "github.com/google/uuid"
 )
 
-// MyEntity struct definition
-type MyEntity struct {
+// Entity struct definition
+type Entity struct {
 	ID    string `json:"id"`
 	Title string `json:"title"`
 }
 
-// NewMyEntity initialize MyEntity
-func NewMyEntity(title string) (*MyEntity, error) {
+// NewEntity initialize MyEntity
+func NewEntity(title string) (*Entity, error) {
 	id := uuid.New()
 	if title == "" {
 		return nil, fmt.Errorf("Invalid title")
 	}
 
-	return &MyEntity{
+	return &Entity{
 		ID:    id.String(),
 		Title: title,
 	}, nil

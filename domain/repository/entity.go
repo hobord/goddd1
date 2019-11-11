@@ -6,16 +6,16 @@ import (
 	"github.com/hobord/goddd1/domain"
 )
 
-// MyEntityRepository interface definition
-type MyEntityRepository interface {
+// EntityRepository interface definition
+type EntityRepository interface {
 	// Get return entity by id
-	Get(ctx context.Context, id string) (*domain.MyEntity, error)
+	Get(ctx context.Context, id string) (*domain.Entity, error)
 
 	// GetAll return all entities
-	GetAll(ctx context.Context) ([]*domain.MyEntity, error)
+	GetAll(ctx context.Context) ([]*domain.Entity, error)
 
 	// Save is save to persintent the entity
-	Save(ctx context.Context, entity *domain.MyEntity) error
+	Save(ctx context.Context, entity *domain.Entity) error
 
 	// Delete entity from persitnet store
 	Delete(ctx context.Context, id string) error

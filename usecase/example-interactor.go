@@ -1,4 +1,4 @@
-package application
+package usecase
 
 import (
 	"context"
@@ -10,6 +10,13 @@ import (
 // ExampleInteractor provides use-case implementation
 type ExampleInteractor struct {
 	Repository repository.MyEntityRepository
+}
+
+// NewExampleInteractor is create a new example "service" / "interactor"
+func NewExampleInteractor(Repository *repository.MyEntityRepository) *ExampleInteractor {
+	return &ExampleInteractor{
+		Repository: Repository,
+	}
 }
 
 // Get return entity by id

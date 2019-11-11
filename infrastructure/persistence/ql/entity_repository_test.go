@@ -25,7 +25,7 @@ func TestGetEntity(t *testing.T) {
 	testID := "TEST_ID"
 	prep.ExpectQuery().WithArgs(testID).WillReturnRows(rows)
 
-	repository := NewMyEntityRepository(db)
+	repository := NewEntityQlRepository(db)
 
 	entity, err := repository.Get(context.TODO(), testID)
 
@@ -37,7 +37,7 @@ func TestGetEntity(t *testing.T) {
 }
 
 func TestCreateEntity(t *testing.T) {
-	entity, err := domain.NewMyEntity("test")
+	entity, err := domain.NewEntity("test")
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -48,7 +48,7 @@ func TestCreateEntity(t *testing.T) {
 		WithArgs(entity.ID, entity.Title).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	repository := NewMyEntityRepository(db)
+	repository := NewEntityQlRepository(db)
 
 	err = repository.Save(context.TODO(), entity)
 
@@ -78,7 +78,7 @@ func TestGetAllEntity(t *testing.T) {
 
 	prep.ExpectQuery().WillReturnRows(rows)
 
-	repository := NewMyEntityRepository(db)
+	repository := NewEntityQlRepository(db)
 
 	entities, err := repository.GetAll(context.TODO())
 
