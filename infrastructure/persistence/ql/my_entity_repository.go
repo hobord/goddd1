@@ -40,7 +40,7 @@ func (r *myEntityRepository) query(ctx context.Context, q string, args ...interf
 }
 
 func (r *myEntityRepository) Get(ctx context.Context, id string) (*domain.MyEntity, error) {
-	row, err := r.queryRow(ctx, "select id, title from entity where id=?", id)
+	row, err := r.queryRow(ctx, "SELECT id, title FROM entity WHERE id=?", id)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +53,7 @@ func (r *myEntityRepository) Get(ctx context.Context, id string) (*domain.MyEnti
 }
 
 func (r *myEntityRepository) GetAll(ctx context.Context) ([]*domain.MyEntity, error) {
-	rows, err := r.query(ctx, "select id, title from users")
+	rows, err := r.query(ctx, "SELECT id, title FROM entity")
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +71,7 @@ func (r *myEntityRepository) GetAll(ctx context.Context) ([]*domain.MyEntity, er
 }
 
 func (r *myEntityRepository) Save(ctx context.Context, entity *domain.MyEntity) error {
-	stmt, err := r.conn.Prepare("insert into entity (id, title) values (?, ?)")
+	stmt, err := r.conn.Prepare("INSERT INTO entity (id, title) VALUES (?, ?)")
 	if err != nil {
 		return err
 	}
@@ -82,7 +82,7 @@ func (r *myEntityRepository) Save(ctx context.Context, entity *domain.MyEntity) 
 }
 
 func (r *myEntityRepository) Delete(ctx context.Context, id string) error {
-	stmt, err := r.conn.Prepare("delete from entity where id=?")
+	stmt, err := r.conn.Prepare("DELETE FROM entity WHERE id=?")
 	if err != nil {
 		return err
 	}

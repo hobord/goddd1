@@ -1,6 +1,10 @@
 package domain
 
-import "fmt"
+import (
+	"fmt"
+
+	uuid "github.com/google/uuid"
+)
 
 // MyEntity struct definition
 type MyEntity struct {
@@ -10,11 +14,13 @@ type MyEntity struct {
 
 // NewMyEntity initialize MyEntity
 func NewMyEntity(title string) (*MyEntity, error) {
+	id := uuid.New()
 	if title == "" {
 		return nil, fmt.Errorf("Invalid title")
 	}
 
 	return &MyEntity{
+		ID:    id.String(),
 		Title: title,
 	}, nil
 }
