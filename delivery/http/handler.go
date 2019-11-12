@@ -1,5 +1,0 @@
-package httphandlers
-
-func makeHttpRouter() {
-
-}
