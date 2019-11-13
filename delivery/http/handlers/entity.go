@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"strings"
 
+	"github.com/gorilla/mux"
 	"github.com/hobord/goddd1/domain"
 	"github.com/hobord/goddd1/usecase"
 
@@ -26,7 +26,8 @@ func NewEntityHTTPApp(entityInteractor *usecase.ExampleInteractor) *EntityHTTPAp
 
 // Get return entity by id
 func (app *EntityHTTPApp) Get(w http.ResponseWriter, r *http.Request) {
-	id := strings.TrimPrefix(r.URL.Path, "/entity/")
+	vars := mux.Vars(r)
+	id := vars["id"]
 
 	entity, err := app.entityInteractor.Get(context.TODO(), string(id))
 	if err != nil {

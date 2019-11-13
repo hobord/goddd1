@@ -1,18 +1,20 @@
 package http
 
 import (
-	"net/http"
+	"github.com/gorilla/mux"
 
 	"github.com/hobord/goddd1/usecase"
 
 	"github.com/hobord/goddd1/delivery/http/handlers"
 )
 
-func MakeRouting(mux *http.ServeMux, entityInteractor *usecase.ExampleInteractor) {
-
+// MakeRouting is add handler functions to mux router
+func MakeRouting(router *mux.Router, entityInteractor *usecase.ExampleInteractor) {
 	entityApp := handlers.NewEntityHTTPApp(entityInteractor)
 
-	mux.Handle("/entity/get", entityApp.Get)
-	mux.Handle("/entity/getall", entityApp.GetAll)
-
+	router.HandleFunc("/entity", entityApp.Create).Methods("POST")
+	router.HandleFunc("/entity/{id}", entityApp.Get)
+	router.HandleFunc("/entity", entityApp.GetAll).Methods("GET")
+	router.HandleFunc("/entity", entityApp.Update).Methods("UPDATE")
+	router.HandleFunc("/entity/{id}", entityApp.Delete).Methods("DELETE")
 }
