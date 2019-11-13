@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
-	_ "github.com/cznic/ql/driver"
 	"github.com/hobord/goddd1/domain"
 	"github.com/stretchr/testify/assert"
 )

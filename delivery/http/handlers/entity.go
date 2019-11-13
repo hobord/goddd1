@@ -28,7 +28,11 @@ func NewEntityHTTPApp(entityInteractor *usecase.ExampleInteractor) *EntityHTTPAp
 func (app *EntityHTTPApp) Get(w http.ResponseWriter, r *http.Request) {
 	id := strings.TrimPrefix(r.URL.Path, "/entity/")
 
-	entity := app.entityInteractor.Get(string(id))
+	entity, err := app.entityInteractor.Get(context.TODO(), string(id))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	entityDTO := &dto.EntityResponse{
 		ID:    entity.ID,
@@ -49,6 +53,7 @@ func (app *EntityHTTPApp) GetAll(w http.ResponseWriter, r *http.Request) {}
 
 // Create is update to persistent the entity
 func (app *EntityHTTPApp) Create(w http.ResponseWriter, r *http.Request) {
+	// Decode the request DTO.
 	decoder := json.NewDecoder(r.Body)
 	var createDTO dto.EntityCreateRequest
 	err := decoder.Decode(&createDTO)
@@ -56,21 +61,40 @@ func (app *EntityHTTPApp) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Create a new entity.
 	entity, err := domain.NewEntity(createDTO.Title)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	err = app.entityInteractor.Save(entity)
+	// Save the new entity.
+	err = app.entityInteractor.Save(context.TODO(), entity)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	// Create a new response DTO.
+	entityDTO := &dto.EntityResponse{
+		ID:    entity.ID,
+		Title: entity.Title,
+	}
+	// Convert to json
+	js, err := json.Marshal(entityDTO)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Send back to response.
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
 }
 
-// Update is update to persistent the entity
+// Update is update to persistent the entity.
 func (app *EntityHTTPApp) Update(w http.ResponseWriter, r *http.Request) {
+	// Decode the request DTO.
 	decoder := json.NewDecoder(r.Body)
 	var updateDTO dto.EntityUpdateRequest
 	err := decoder.Decode(&updateDTO)
@@ -78,30 +102,37 @@ func (app *EntityHTTPApp) Update(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	// Load the original entity.
 	entity, err := app.entityInteractor.Get(context.TODO(), updateDTO.ID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	// Update the entity properties.
 	entity.Title = updateDTO.Title
 
-	err = app.entityInteractor.Save(entity)
+	// save the entity
+	err = app.entityInteractor.Save(context.TODO(), entity)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	// Create a response DTO.
 	entityDTO := &dto.EntityResponse{
 		ID:    entity.ID,
 		Title: entity.Title,
 	}
+	// Convert to json
 	js, err := json.Marshal(entityDTO)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	// Send back to response.
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(js)
 }
@@ -109,8 +140,10 @@ func (app *EntityHTTPApp) Update(w http.ResponseWriter, r *http.Request) {
 // Delete entity
 func (app *EntityHTTPApp) Delete(w http.ResponseWriter, r *http.Request) {}
 
+// MessageContextKey is an unique kontext key for example message context
 const MessageContextKey = "message"
 
+// AddMessageMiddleware is an example message middleware
 func (app *EntityHTTPApp) AddMessageMiddleware(message string, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), MessageContextKey, message)
