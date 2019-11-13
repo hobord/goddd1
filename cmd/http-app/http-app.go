@@ -18,7 +18,7 @@ func main() {
 
 	conn, err := sql.Open("mysql", "user:password@/dbname")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Cant connect to database: %v", err)
 	}
 
 	repository := persistence.NewEntityMysqlRepository(conn)
@@ -26,5 +26,5 @@ func main() {
 
 	delivery.MakeRouting(r, entityInteractor)
 
-	http.ListenAndServe(":80", r)
+	log.Fatal(http.ListenAndServe(":80", r))
 }
