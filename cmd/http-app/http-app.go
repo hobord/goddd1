@@ -9,7 +9,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/gorilla/mux"
-	delivery "github.com/hobord/goddd1/delivery/http"
+	httpdelivery "github.com/hobord/goddd1/delivery/http"
 	persistence "github.com/hobord/goddd1/infrastructure/persistence/mysql"
 	"github.com/hobord/goddd1/usecase"
 )
@@ -30,7 +30,7 @@ func main() {
 	repository := persistence.NewEntityMysqlRepository(conn)
 	entityInteractor := usecase.NewExampleInteractor(&repository)
 
-	delivery.MakeRouting(r, entityInteractor)
+	httpdelivery.MakeRouting(r, entityInteractor)
 
 	log.Fatal(http.ListenAndServe(":"+httpPort, r))
 }
