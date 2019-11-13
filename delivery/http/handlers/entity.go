@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/hobord/goddd1/domain"
 	"github.com/hobord/goddd1/usecase"
 
 	"github.com/hobord/goddd1/delivery/http/dto"
@@ -47,7 +48,24 @@ func (app *EntityHTTPApp) Get(w http.ResponseWriter, r *http.Request) {
 func (app *EntityHTTPApp) GetAll(w http.ResponseWriter, r *http.Request) {}
 
 // Save is save to persintent the entity
-func (app *EntityHTTPApp) Save(w http.ResponseWriter, r *http.Request) {}
+func (app *EntityHTTPApp) Save(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	var createDTO dto.EntityCreateRequest
+	err := decoder.Decode(&createDTO)
+	if err != nil {
+		return
+	}
+
+	entity, err := domain.NewEntity(createDTO.Title)
+	if err != nil {
+		return
+	}
+
+	err = app.entityInteractor.Save(entity)
+	if err != nil {
+		return
+	}
+}
 
 // Delete entity from persitnet store
 func (app *EntityHTTPApp) Delete(w http.ResponseWriter, r *http.Request) {}
