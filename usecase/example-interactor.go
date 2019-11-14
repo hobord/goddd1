@@ -7,7 +7,7 @@ import (
 	"github.com/hobord/goddd1/domain/repository"
 )
 
-// ExampleInteractor provides use-case implementation
+// ExampleInteractor provides an example use-case implementation
 type ExampleInteractor struct {
 	Repository repository.EntityRepository
 }

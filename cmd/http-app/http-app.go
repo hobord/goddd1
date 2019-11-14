@@ -24,7 +24,7 @@ func main() {
 
 	conn, err := sql.Open("mysql", "user:password@/dbname")
 	if err != nil {
-		log.Fatal("Cant connect to database: %v", err)
+		log.Fatal(err)
 	}
 
 	repository := persistence.NewEntityMysqlRepository(conn)

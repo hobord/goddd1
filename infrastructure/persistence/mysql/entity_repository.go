@@ -44,12 +44,14 @@ func (r *entityRepository) Get(ctx context.Context, id string) (*domain.Entity, 
 	if err != nil {
 		return nil, err
 	}
-	u := &domain.Entity{}
-	err = row.Scan(&u.ID, &u.Title)
+
+	entity := &domain.Entity{}
+	err = row.Scan(&entity.ID, &entity.Title)
 	if err != nil {
 		return nil, err
 	}
-	return u, nil
+
+	return entity, nil
 }
 
 func (r *entityRepository) GetAll(ctx context.Context) ([]*domain.Entity, error) {
@@ -58,16 +60,19 @@ func (r *entityRepository) GetAll(ctx context.Context) ([]*domain.Entity, error)
 		return nil, err
 	}
 	defer rows.Close()
-	us := make([]*domain.Entity, 0)
+
+	entities := make([]*domain.Entity, 0)
+
 	for rows.Next() {
-		u := &domain.Entity{}
-		err = rows.Scan(&u.ID, &u.Title)
+		entity := &domain.Entity{}
+		err = rows.Scan(&entity.ID, &entity.Title)
 		if err != nil {
 			return nil, err
 		}
-		us = append(us, u)
+		entities = append(entities, entity)
 	}
-	return us, nil
+
+	return entities, nil
 }
 
 func (r *entityRepository) Save(ctx context.Context, entity *domain.Entity) error {
