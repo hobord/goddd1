@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -8,6 +9,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/hobord/goddd1/domain"
 	"github.com/hobord/goddd1/usecase/mocks"
+	"github.com/icrowley/fake"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -16,9 +18,11 @@ func TestGetByID(t *testing.T) {
 	// Create a mock uses case interactor and mock the results
 	mockUsecase := &mocks.ExampleInteractorInterface{}
 
+	fakeID := fake.Sentence()
+	fakeTitle := fake.Sentence()
 	usecaseReturnEntity := &domain.Entity{
-		ID:    "1",
-		Title: "Works",
+		ID:    fakeID,
+		Title: fakeTitle,
 	}
 	mockUsecase.On("GetByID", mock.Anything, mock.Anything).Return(usecaseReturnEntity, nil)
 
@@ -48,7 +52,7 @@ func TestGetByID(t *testing.T) {
 	}
 
 	// Check the response body is what we expect.
-	expected := `{"id":"1","title":"Works"}`
+	expected := fmt.Sprintf(`{"id":"%s","title":"%s"}`, fakeID, fakeTitle)
 	if rr.Body.String() != expected {
 		t.Errorf("handler returned unexpected body: got %v want %v",
 			rr.Body.String(), expected)

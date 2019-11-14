@@ -4,9 +4,11 @@ go 1.13
 
 require (
 	github.com/DATA-DOG/go-sqlmock v1.3.3
+	github.com/corpix/uarand v0.1.1 // indirect
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/google/uuid v1.1.1
 	github.com/gorilla/mux v1.7.3
+	github.com/icrowley/fake v0.0.0-20180203215853-4178557ae428
 	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/stretchr/testify v1.4.0
 	github.com/vektra/mockery v0.0.0-20181123154057-e78b021dcbb5 // indirect
