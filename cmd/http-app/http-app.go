@@ -28,7 +28,7 @@ func main() {
 	}
 
 	repository := persistence.NewEntityMysqlRepository(conn)
-	entityInteractor := usecase.NewExampleInteractor(&repository)
+	entityInteractor := usecase.NewExampleInteractor(repository)
 
 	httpdelivery.MakeRouting(r, entityInteractor)
 

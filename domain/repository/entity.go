@@ -9,7 +9,7 @@ import (
 // EntityRepository interface definition
 type EntityRepository interface {
 	// Get return entity by id
-	Get(ctx context.Context, id string) (*domain.Entity, error)
+	GetByID(ctx context.Context, id string) (*domain.Entity, error)
 
 	// GetAll return all entities
 	GetAll(ctx context.Context) ([]*domain.Entity, error)

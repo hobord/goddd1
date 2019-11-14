@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetEntity(t *testing.T) {
+func TestGetEntityByID(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -26,7 +26,7 @@ func TestGetEntity(t *testing.T) {
 
 	repository := NewEntityMysqlRepository(db)
 
-	entity, err := repository.Get(context.TODO(), testID)
+	entity, err := repository.GetByID(context.TODO(), testID)
 
 	if err != nil {
 		assert.NoError(t, err)

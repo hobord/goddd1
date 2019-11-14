@@ -39,7 +39,7 @@ func (r *entityRepository) query(ctx context.Context, q string, args ...interfac
 	return stmt.QueryContext(ctx, args...)
 }
 
-func (r *entityRepository) Get(ctx context.Context, id string) (*domain.Entity, error) {
+func (r *entityRepository) GetByID(ctx context.Context, id string) (*domain.Entity, error) {
 	row, err := r.queryRow(ctx, "SELECT id, title FROM entity WHERE id=?", id)
 	if err != nil {
 		return nil, err
