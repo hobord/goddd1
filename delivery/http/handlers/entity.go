@@ -143,7 +143,7 @@ func (app *EntityHTTPApp) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Load the original entity.
+	// Load the original entity. TODO: move to usecase?
 	entity, err := app.entityInteractor.GetByID(r.Context(), updateDTO.ID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

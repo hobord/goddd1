@@ -8,6 +8,7 @@ import (
 )
 
 // ExampleInteractorInterface is the interface for example use case
+// mockery -name=ExampleInteractorInterface
 type ExampleInteractorInterface interface {
 	GetByID(ctx context.Context, id string) (*domain.Entity, error)
 	GetAll(ctx context.Context) ([]*domain.Entity, error)

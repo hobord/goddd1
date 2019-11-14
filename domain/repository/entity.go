@@ -7,6 +7,7 @@ import (
 )
 
 // EntityRepository interface definition
+// mockery -name=EntityRepository
 type EntityRepository interface {
 	// Get return entity by id
 	GetByID(ctx context.Context, id string) (*domain.Entity, error)
