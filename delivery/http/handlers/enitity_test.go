@@ -15,47 +15,80 @@ import (
 
 func TestGetByID(t *testing.T) {
 
-	// Create a mock uses case interactor and mock the results
-	mockUsecase := &mocks.ExampleInteractorInterface{}
-
 	fakeID := fake.Sentence()
 	fakeTitle := fake.Sentence()
 	usecaseReturnEntity := &domain.Entity{
 		ID:    fakeID,
 		Title: fakeTitle,
 	}
-	mockUsecase.On("GetByID", mock.Anything, mock.Anything).Return(usecaseReturnEntity, nil)
 
-	// Create a test HTTPApp with moc usecase
-	app := NewEntityHTTPApp(mockUsecase)
-
-	// Create a test request
-	req, err := http.NewRequest("GET", "/entity/1", nil)
-	if err != nil {
-		t.Fatal(err)
+	type wantStruct struct {
+		httpStatusCode int
+		responseString string
+	}
+	var testCases = []struct {
+		input *domain.Entity
+		want  wantStruct
+	}{
+		{
+			input: usecaseReturnEntity,
+			want: wantStruct{
+				httpStatusCode: http.StatusOK,
+				responseString: fmt.Sprintf(`{"id":"%s","title":"%s"}`, fakeID, fakeTitle),
+			},
+		},
+		{
+			input: nil,
+			want: wantStruct{
+				httpStatusCode: http.StatusInternalServerError,
+				responseString: "No resource found\n",
+			},
+		},
 	}
 
-	// Create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
-	rr := httptest.NewRecorder()
+	for _, testCase := range testCases {
 
-	// Create a router and assign our handler func
-	router := mux.NewRouter()
-	router.HandleFunc("/entity/{id}", app.GetByID)
+		// Create a mock uses case interactor and mock the results
+		mockUsecase := &mocks.ExampleInteractorInterface{}
+		mockUsecase.On("GetByID", mock.Anything, mock.Anything).Return(testCase.input, nil)
 
-	// Make a request into the router
-	router.ServeHTTP(rr, req)
+		// Create a test HTTPApp with moc usecase
+		app := NewEntityHTTPApp(mockUsecase)
 
-	// Check the status code is what we expect.
-	if status := rr.Code; status != http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusOK)
-	}
+		var req *http.Request
+		var err error
+		// Create a test request
+		if testCase.input == nil {
+			req, err = http.NewRequest("GET", "/entity/NOTFOUND_SIMULATION", nil)
+		} else {
+			req, err = http.NewRequest("GET", "/entity/"+testCase.input.ID, nil)
+		}
+		if err != nil {
+			t.Fatal(err)
+		}
 
-	// Check the response body is what we expect.
-	expected := fmt.Sprintf(`{"id":"%s","title":"%s"}`, fakeID, fakeTitle)
-	if rr.Body.String() != expected {
-		t.Errorf("handler returned unexpected body: got %v want %v",
-			rr.Body.String(), expected)
+		// Create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
+		rr := httptest.NewRecorder()
+
+		// Create a router and assign our handler func
+		router := mux.NewRouter()
+		router.HandleFunc("/entity/{id}", app.GetByID)
+
+		// Make a request into the router
+		router.ServeHTTP(rr, req)
+
+		// Check the status code is what we expect.
+		if status := rr.Code; status != testCase.want.httpStatusCode {
+			t.Errorf("handler returned wrong status code: got %v want %v",
+				status, testCase.want.httpStatusCode)
+		}
+
+		// Check the response body is what we expect.
+		expected := testCase.want.responseString
+		if rr.Body.String() != expected {
+			t.Errorf("handler returned unexpected body: got %v want %v",
+				rr.Body.String(), expected)
+		}
 	}
 }
 

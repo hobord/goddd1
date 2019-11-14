@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -36,6 +37,11 @@ func (app *EntityHTTPApp) GetByID(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	if entity == nil {
+		err = errors.New("No resource found")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	entityDTO := &dto.EntityResponse{
 		ID:    entity.ID,
@@ -55,6 +61,11 @@ func (app *EntityHTTPApp) GetByID(w http.ResponseWriter, r *http.Request) {
 func (app *EntityHTTPApp) GetAll(w http.ResponseWriter, r *http.Request) {
 	entities, err := app.entityInteractor.GetAll(r.Context())
 	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if entities == nil || len(entities) == 0 {
+		err = errors.New("No resource found")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -138,6 +149,11 @@ func (app *EntityHTTPApp) Update(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	if entity == nil {
+		err = errors.New("No resource found")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	// Update the entity properties.
 	entity.Title = updateDTO.Title
@@ -176,7 +192,6 @@ func (app *EntityHTTPApp) Delete(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 	if entity == nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
