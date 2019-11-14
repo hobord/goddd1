@@ -7,6 +7,14 @@ import (
 	"github.com/hobord/goddd1/domain/repository"
 )
 
+// ExampleInteractorInterface is the interface for example use case
+type ExampleInteractorInterface interface {
+	GetByID(ctx context.Context, id string) (*domain.Entity, error)
+	GetAll(ctx context.Context) ([]*domain.Entity, error)
+	Save(ctx context.Context, entity *domain.Entity) error
+	Delete(ctx context.Context, id string) error
+}
+
 // ExampleInteractor provides an example use-case implementation
 type ExampleInteractor struct {
 	EntityRepository repository.EntityRepository

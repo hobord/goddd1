@@ -14,11 +14,11 @@ import (
 
 // EntityHTTPApp is handle the entity related http request responses
 type EntityHTTPApp struct {
-	entityInteractor *usecase.ExampleInteractor
+	entityInteractor usecase.ExampleInteractorInterface
 }
 
 // NewEntityHTTPApp create a new http handler app to entity
-func NewEntityHTTPApp(entityInteractor *usecase.ExampleInteractor) *EntityHTTPApp {
+func NewEntityHTTPApp(entityInteractor usecase.ExampleInteractorInterface) *EntityHTTPApp {
 	return &EntityHTTPApp{
 		entityInteractor: entityInteractor,
 	}

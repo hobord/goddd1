@@ -27,3 +27,5 @@ func TestGetByID(t *testing.T) {
 	assert.Equal(t, result.ID, "1", "The result ID should be 1")
 	assert.Equal(t, result.Title, "Works", "The result ID should be 1")
 }
+
+// TODO: implement all use cases tests
