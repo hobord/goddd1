@@ -20,17 +20,22 @@ func main() {
 		httpPort = "80"
 	}
 
-	r := mux.NewRouter()
+	dbConnection := os.Getenv("DB_CONNECTION")
+	if dbConnection == "" {
+		dbConnection = "user:password@/dbname"
+	}
 
-	conn, err := sql.Open("mysql", "user:password@/dbname")
+	conn, err := sql.Open("mysql", dbConnection)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	repository := persistence.NewEntityMysqlRepository(conn)
-	entityInteractor := usecase.NewExampleInteractor(repository)
+	interactor := usecase.NewExampleInteractor(repository)
 
-	httpdelivery.MakeRouting(r, entityInteractor)
+	r := mux.NewRouter()
+
+	httpdelivery.MakeRouting(r, interactor)
 
 	log.Fatal(http.ListenAndServe(":"+httpPort, r))
 }
