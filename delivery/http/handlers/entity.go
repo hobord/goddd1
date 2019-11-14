@@ -12,6 +12,8 @@ import (
 	"github.com/hobord/goddd1/delivery/http/dto"
 )
 
+// TODO: make custom http errors
+
 // EntityHTTPApp is handle the entity related http request responses
 type EntityHTTPApp struct {
 	entityInteractor usecase.ExampleInteractorInterface
@@ -165,7 +167,28 @@ func (app *EntityHTTPApp) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 // Delete entity
-func (app *EntityHTTPApp) Delete(w http.ResponseWriter, r *http.Request) {}
+func (app *EntityHTTPApp) Delete(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	entity, err := app.entityInteractor.GetByID(r.Context(), string(id))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if entity == nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = app.entityInteractor.Delete(r.Context(), entity.ID)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
 
 // MessageContextKey is an unique context key for example message context
 const MessageContextKey = "message"
