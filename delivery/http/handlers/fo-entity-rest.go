@@ -42,7 +42,7 @@ func (app *FooEntityRestHTTPModule) GetByID(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	entityDTO := &dto.EntityResponse{
+	entityDTO := &dto.FooEntityResponse{
 		ID:    entity.ID,
 		Title: entity.Title,
 	}
@@ -69,9 +69,9 @@ func (app *FooEntityRestHTTPModule) GetAll(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	entityDTOs := make([]dto.EntityResponse, 1)
+	entityDTOs := make([]dto.FooEntityResponse, 1)
 	for _, entity := range res {
-		entityDTO := &dto.EntityResponse{
+		entityDTO := &dto.FooEntityResponse{
 			ID:    entity.ID,
 			Title: entity.Title,
 		}
@@ -94,7 +94,7 @@ func (app *FooEntityRestHTTPModule) GetAll(w http.ResponseWriter, r *http.Reques
 func (app *FooEntityRestHTTPModule) Create(w http.ResponseWriter, r *http.Request) {
 	// Decode the request DTO.
 	decoder := json.NewDecoder(r.Body)
-	var createDTO dto.EntityCreateRequest
+	var createDTO dto.FooEntityCreateRequest
 	err := decoder.Decode(&createDTO)
 	if err != nil {
 		return
@@ -115,7 +115,7 @@ func (app *FooEntityRestHTTPModule) Create(w http.ResponseWriter, r *http.Reques
 	}
 
 	// Create a new response DTO.
-	entityDTO := &dto.EntityResponse{
+	entityDTO := &dto.FooEntityResponse{
 		ID:    entity.ID,
 		Title: entity.Title,
 	}
@@ -135,7 +135,7 @@ func (app *FooEntityRestHTTPModule) Create(w http.ResponseWriter, r *http.Reques
 func (app *FooEntityRestHTTPModule) Update(w http.ResponseWriter, r *http.Request) {
 	// Decode the request DTO.
 	decoder := json.NewDecoder(r.Body)
-	var updateDTO dto.EntityUpdateRequest
+	var updateDTO dto.FooEntityUpdateRequest
 	err := decoder.Decode(&updateDTO)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -165,7 +165,7 @@ func (app *FooEntityRestHTTPModule) Update(w http.ResponseWriter, r *http.Reques
 	}
 
 	// Create a response DTO.
-	entityDTO := &dto.EntityResponse{
+	entityDTO := &dto.FooEntityResponse{
 		ID:    entity.ID,
 		Title: entity.Title,
 	}
