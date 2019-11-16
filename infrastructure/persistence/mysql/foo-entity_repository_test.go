@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
-	"github.com/hobord/goddd1/domain"
+	"github.com/hobord/goddd1/domain/entity"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -36,7 +36,7 @@ func TestGetEntityByID(t *testing.T) {
 }
 
 func TestCreateEntity(t *testing.T) {
-	entity, err := domain.NewEntity("test")
+	entity, err := entities.NewFooEntity("test")
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)

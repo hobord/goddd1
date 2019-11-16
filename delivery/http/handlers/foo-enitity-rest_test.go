@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/gorilla/mux"
-	"github.com/hobord/goddd1/domain"
+	entities "github.com/hobord/goddd1/domain/entity"
 	"github.com/hobord/goddd1/usecase/mocks"
 	"github.com/icrowley/fake"
 	mock "github.com/stretchr/testify/mock"
@@ -17,7 +17,7 @@ func TestGetByID(t *testing.T) {
 
 	fakeID := fake.Sentence()
 	fakeTitle := fake.Sentence()
-	usecaseReturnEntity := &domain.Entity{
+	usecaseReturnEntity := &entities.FooEntity{
 		ID:    fakeID,
 		Title: fakeTitle,
 	}
@@ -27,7 +27,7 @@ func TestGetByID(t *testing.T) {
 		responseString string
 	}
 	var testCases = []struct {
-		input *domain.Entity
+		input *entities.FooEntity
 		want  wantStruct
 	}{
 		{
@@ -53,7 +53,7 @@ func TestGetByID(t *testing.T) {
 		mockUsecase.On("GetByID", mock.Anything, mock.Anything).Return(testCase.input, nil)
 
 		// Create a test HTTPApp with moc usecase
-		app := NewEntityHTTPApp(mockUsecase)
+		app := NewFooEntityRestHTTPModule(mockUsecase)
 
 		var req *http.Request
 		var err error

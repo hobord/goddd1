@@ -7,28 +7,27 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/hobord/goddd1/domain"
-	"github.com/hobord/goddd1/usecase"
-
 	"github.com/hobord/goddd1/delivery/http/dto"
+	entities "github.com/hobord/goddd1/domain/entity"
+	"github.com/hobord/goddd1/usecase"
 )
 
 // TODO: make custom http errors
 
-// EntityHTTPApp is handle the entity related http request responses
-type EntityHTTPApp struct {
+// FooEntityRestHTTPModule is handle the entity related http request responses
+type FooEntityRestHTTPModule struct {
 	entityInteractor usecase.ExampleInteractorInterface
 }
 
-// NewEntityHTTPApp create a new http handler app to entity
-func NewEntityHTTPApp(entityInteractor usecase.ExampleInteractorInterface) *EntityHTTPApp {
-	return &EntityHTTPApp{
+// NewFooEntityRestHTTPModule create a new http handler app to entity
+func NewFooEntityRestHTTPModule(entityInteractor usecase.ExampleInteractorInterface) *FooEntityRestHTTPModule {
+	return &FooEntityRestHTTPModule{
 		entityInteractor: entityInteractor,
 	}
 }
 
 // GetByID return entity by id
-func (app *EntityHTTPApp) GetByID(w http.ResponseWriter, r *http.Request) {
+func (app *FooEntityRestHTTPModule) GetByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
@@ -58,20 +57,20 @@ func (app *EntityHTTPApp) GetByID(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetAll return all entities
-func (app *EntityHTTPApp) GetAll(w http.ResponseWriter, r *http.Request) {
-	entities, err := app.entityInteractor.GetAll(r.Context())
+func (app *FooEntityRestHTTPModule) GetAll(w http.ResponseWriter, r *http.Request) {
+	res, err := app.entityInteractor.GetAll(r.Context())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	if entities == nil || len(entities) == 0 {
+	if res == nil || len(res) == 0 {
 		err = errors.New("No resource found")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	entityDTOs := make([]dto.EntityResponse, 1)
-	for _, entity := range entities {
+	for _, entity := range res {
 		entityDTO := &dto.EntityResponse{
 			ID:    entity.ID,
 			Title: entity.Title,
@@ -92,7 +91,7 @@ func (app *EntityHTTPApp) GetAll(w http.ResponseWriter, r *http.Request) {
 }
 
 // Create is update to persistent the entity
-func (app *EntityHTTPApp) Create(w http.ResponseWriter, r *http.Request) {
+func (app *FooEntityRestHTTPModule) Create(w http.ResponseWriter, r *http.Request) {
 	// Decode the request DTO.
 	decoder := json.NewDecoder(r.Body)
 	var createDTO dto.EntityCreateRequest
@@ -102,7 +101,7 @@ func (app *EntityHTTPApp) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create a new entity.
-	entity, err := domain.NewEntity(createDTO.Title)
+	entity, err := entities.NewFooEntity(createDTO.Title)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -133,7 +132,7 @@ func (app *EntityHTTPApp) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 // Update is update to persistent the entity.
-func (app *EntityHTTPApp) Update(w http.ResponseWriter, r *http.Request) {
+func (app *FooEntityRestHTTPModule) Update(w http.ResponseWriter, r *http.Request) {
 	// Decode the request DTO.
 	decoder := json.NewDecoder(r.Body)
 	var updateDTO dto.EntityUpdateRequest
@@ -183,7 +182,7 @@ func (app *EntityHTTPApp) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 // Delete entity
-func (app *EntityHTTPApp) Delete(w http.ResponseWriter, r *http.Request) {
+func (app *FooEntityRestHTTPModule) Delete(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
@@ -209,7 +208,7 @@ func (app *EntityHTTPApp) Delete(w http.ResponseWriter, r *http.Request) {
 const MessageContextKey = "message"
 
 // AddMessageMiddleware is an example message middleware
-func (app *EntityHTTPApp) AddMessageMiddleware(message string, next http.Handler) http.Handler {
+func (app *FooEntityRestHTTPModule) AddMessageMiddleware(message string, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), MessageContextKey, message)
 		next.ServeHTTP(w, r.WithContext(ctx))

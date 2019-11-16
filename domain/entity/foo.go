@@ -1,4 +1,4 @@
-package domain
+package entities
 
 import (
 	"fmt"
@@ -6,20 +6,20 @@ import (
 	uuid "github.com/google/uuid"
 )
 
-// Entity struct definition
-type Entity struct {
+// FooEntity struct definition
+type FooEntity struct {
 	ID    string `json:"id"`
 	Title string `json:"title"`
 }
 
-// NewEntity initialize MyEntity
-func NewEntity(title string) (*Entity, error) {
+// NewFooEntity initialize MyEntity
+func NewFooEntity(title string) (*FooEntity, error) {
 	id := uuid.New()
 	if title == "" {
 		return nil, fmt.Errorf("Invalid title")
 	}
 
-	return &Entity{
+	return &FooEntity{
 		ID:    id.String(),
 		Title: title,
 	}, nil

@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/hobord/goddd1/domain"
+	entities "github.com/hobord/goddd1/domain/entity"
 	"github.com/hobord/goddd1/domain/repository/mocks"
 	"github.com/icrowley/fake"
 	"github.com/stretchr/testify/assert"
@@ -12,11 +12,11 @@ import (
 )
 
 func TestGetByID(t *testing.T) {
-	mockRepository := &mocks.EntityRepository{}
+	mockRepository := &mocks.FooEntityRepository{}
 
 	fakeID := fake.Sentence()
 	fakeTitle := fake.Sentence()
-	returnMockEntity := &domain.Entity{
+	returnMockEntity := &entities.FooEntity{
 		ID:    fakeID,
 		Title: fakeTitle,
 	}
@@ -27,8 +27,8 @@ func TestGetByID(t *testing.T) {
 	if err != nil {
 		assert.NoError(t, err)
 	}
-	assert.Equal(t, result.ID, fakeID, "The result ID should be:" + fakeID)
-	assert.Equal(t, result.Title, fakeTitle, "The result ID should be:" + fakeTitle)
+	assert.Equal(t, result.ID, fakeID, "The result ID should be:"+fakeID)
+	assert.Equal(t, result.Title, fakeTitle, "The result ID should be:"+fakeTitle)
 }
 
 // TODO: implement all use cases tests

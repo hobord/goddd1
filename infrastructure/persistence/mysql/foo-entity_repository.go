@@ -5,21 +5,21 @@ import (
 	"database/sql"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/hobord/goddd1/domain"
+	"github.com/hobord/goddd1/domain/entity"
 	"github.com/hobord/goddd1/domain/repository"
 )
 
-// EntityRepository Implements repository.EntityRepository
-type entityRepository struct {
+// FooEntityRepository Implements repository.FooEntityRepository
+type FooEntityRepository struct {
 	conn *sql.DB
 }
 
-// NewEntityMysqlRepository returns initialized EntityRepositoryImpl
-func NewEntityMysqlRepository(conn *sql.DB) repository.EntityRepository {
-	return &entityRepository{conn: conn}
+// NewEntityMysqlRepository returns initialized FooEntityRepositoryImpl
+func NewEntityMysqlRepository(conn *sql.DB) repository.FooEntityRepository {
+	return &FooEntityRepository{conn: conn}
 }
 
-func (r *entityRepository) queryRow(ctx context.Context, q string, args ...interface{}) (*sql.Row, error) {
+func (r *FooEntityRepository) queryRow(ctx context.Context, q string, args ...interface{}) (*sql.Row, error) {
 	stmt, err := r.conn.Prepare(q)
 	if err != nil {
 		return nil, err
@@ -29,7 +29,7 @@ func (r *entityRepository) queryRow(ctx context.Context, q string, args ...inter
 	return stmt.QueryRowContext(ctx, args...), nil
 }
 
-func (r *entityRepository) query(ctx context.Context, q string, args ...interface{}) (*sql.Rows, error) {
+func (r *FooEntityRepository) query(ctx context.Context, q string, args ...interface{}) (*sql.Rows, error) {
 	stmt, err := r.conn.Prepare(q)
 	if err != nil {
 		return nil, err
@@ -39,13 +39,13 @@ func (r *entityRepository) query(ctx context.Context, q string, args ...interfac
 	return stmt.QueryContext(ctx, args...)
 }
 
-func (r *entityRepository) GetByID(ctx context.Context, id string) (*domain.Entity, error) {
+func (r *FooEntityRepository) GetByID(ctx context.Context, id string) (*entities.FooEntity, error) {
 	row, err := r.queryRow(ctx, "SELECT id, title FROM entity WHERE id=?", id)
 	if err != nil {
 		return nil, err
 	}
 
-	entity := &domain.Entity{}
+	entity := &entities.FooEntity{}
 	err = row.Scan(&entity.ID, &entity.Title)
 	if err != nil {
 		return nil, err
@@ -54,28 +54,28 @@ func (r *entityRepository) GetByID(ctx context.Context, id string) (*domain.Enti
 	return entity, nil
 }
 
-func (r *entityRepository) GetAll(ctx context.Context) ([]*domain.Entity, error) {
+func (r *FooEntityRepository) GetAll(ctx context.Context) ([]*entities.FooEntity, error) {
 	rows, err := r.query(ctx, "SELECT id, title FROM entity")
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	entities := make([]*domain.Entity, 0)
+	results := make([]*entities.FooEntity, 0)
 
 	for rows.Next() {
-		entity := &domain.Entity{}
+		entity := &entities.FooEntity{}
 		err = rows.Scan(&entity.ID, &entity.Title)
 		if err != nil {
 			return nil, err
 		}
-		entities = append(entities, entity)
+		results = append(results, entity)
 	}
 
-	return entities, nil
+	return results, nil
 }
 
-func (r *entityRepository) Save(ctx context.Context, entity *domain.Entity) error {
+func (r *FooEntityRepository) Save(ctx context.Context, entity *entities.FooEntity) error {
 	stmt, err := r.conn.Prepare("INSERT INTO entity (id, title) VALUES (?, ?)")
 	if err != nil {
 		return err
@@ -86,7 +86,7 @@ func (r *entityRepository) Save(ctx context.Context, entity *domain.Entity) erro
 	return err
 }
 
-func (r *entityRepository) Delete(ctx context.Context, id string) error {
+func (r *FooEntityRepository) Delete(ctx context.Context, id string) error {
 	stmt, err := r.conn.Prepare("DELETE FROM entity WHERE id=?")
 	if err != nil {
 		return err
