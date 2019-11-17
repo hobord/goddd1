@@ -187,6 +187,8 @@ func (app *FooEntityRestHTTPModule) Delete(w http.ResponseWriter, r *http.Reques
 	vars := mux.Vars(r)
 	id := vars["id"]
 
+	// load entity for check it is exist, or check entity level permission...
+	// It is not necessary, it just an example...
 	entity, err := app.entityInteractor.GetByID(r.Context(), string(id))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
