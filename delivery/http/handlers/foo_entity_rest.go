@@ -38,7 +38,7 @@ func (app *FooEntityRestHTTPModule) GetByID(w http.ResponseWriter, r *http.Reque
 	}
 	if entity == nil {
 		err = errors.New("No resource found")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
@@ -65,7 +65,7 @@ func (app *FooEntityRestHTTPModule) GetAll(w http.ResponseWriter, r *http.Reques
 	}
 	if res == nil || len(res) == 0 {
 		err = errors.New("No resource found")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
@@ -97,6 +97,7 @@ func (app *FooEntityRestHTTPModule) Create(w http.ResponseWriter, r *http.Reques
 	var createDTO dto.FooEntityCreateRequest
 	err := decoder.Decode(&createDTO)
 	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -138,7 +139,7 @@ func (app *FooEntityRestHTTPModule) Update(w http.ResponseWriter, r *http.Reques
 	var updateDTO dto.FooEntityUpdateRequest
 	err := decoder.Decode(&updateDTO)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -150,7 +151,7 @@ func (app *FooEntityRestHTTPModule) Update(w http.ResponseWriter, r *http.Reques
 	}
 	if entity == nil {
 		err = errors.New("No resource found")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
@@ -192,7 +193,7 @@ func (app *FooEntityRestHTTPModule) Delete(w http.ResponseWriter, r *http.Reques
 		return
 	}
 	if entity == nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 

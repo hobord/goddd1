@@ -40,7 +40,7 @@ func TestGetByID(t *testing.T) {
 		{
 			input: nil,
 			want: wantStruct{
-				httpStatusCode: http.StatusInternalServerError,
+				httpStatusCode: http.StatusNotFound,
 				responseString: "No resource found\n",
 			},
 		},
