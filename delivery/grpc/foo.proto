@@ -1,0 +1,42 @@
+syntax = "proto3";
+package github.com.hobord.goddd1.foo;
+option go_package = "foo";
+
+service FooService {
+  rpc CreateFoo(CreateFooRequest) returns (CreateFooResponse) {}
+  rpc GetFooByID(GetFooByIDRequest) returns (FooResponse) {}
+  rpc UpdateFoo(UpdateFooRequest) returns (UpdateFooResponse) {}
+  rpc DeleteFoo(DeleteFooRequest) returns (DeleteFooResponse) {}
+}
+
+message CreateFooRequest {
+  string title = 1;
+}
+message CreateFooResponse {
+  string id = 1;
+}
+message FooResponse {
+  string id = 1;
+  string title = 2;
+}
+
+message GetFooByIDRequest {
+  string id = 1;
+}
+
+message UpdateFooRequest {
+  string id = 1;
+  string title = 2;
+}
+
+message UpdateFooResponse {
+  string id = 1;
+}
+
+message DeleteFooRequest {
+  string id = 1;
+}
+
+message DeleteFooResponse {
+  string id = 1;
+}
